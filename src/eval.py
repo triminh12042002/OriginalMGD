@@ -9,7 +9,7 @@ from accelerate.logging import get_logger
 from diffusers import AutoencoderKL, DDIMScheduler
 from diffusers.utils import check_min_version
 from diffusers.utils.import_utils import is_xformers_available
-from transformers import CLIPTextModel, CLIPTokenizer
+from transformers import CLIPTextModel, CLIPTokenizer, CLIPModel, CLIPTextConfig
 
 # custom imports
 from datasets.dresscode import DressCodeDataset
@@ -46,9 +46,14 @@ def main() -> None:
     tokenizer = CLIPTokenizer.from_pretrained(
         args.pretrained_model_name_or_path, subfolder="tokenizer", revision=args.revision
     )
-    text_encoder = CLIPTextModel.from_pretrained(
-        args.pretrained_model_name_or_path, subfolder="text_encoder", revision=args.revision
-    )
+    # text_encoder = CLIPTextModel.from_pretrained(
+    #     args.pretrained_model_name_or_path, subfolder="text_encoder", revision=args.revision
+    # )
+    
+    clip_model = CLIPModel.from_pretrained(args.pretrained_model_path_of_CLIP)
+    text_encoder = CLIPTextModel(CLIPTextConfig.from_pretrained(args.pretrained_model_path_of_CLIP))
+    text_encoder.text_model = clip_model.text_model
+
     vae = AutoencoderKL.from_pretrained(args.pretrained_model_name_or_path, subfolder="vae", revision=args.revision)
 
     unet = torch.hub.load(dataset=args.dataset, repo_or_dir='aimagelab/multimodal-garment-designer', source='github',

@@ -19,6 +19,12 @@ def eval_parse_args() -> argparse.Namespace:
         help="Path to pretrained model or model identifier from huggingface.co/models.",
     )
     parser.add_argument(
+        "--pretrained_model_path_of_CLIP",
+        type=str,
+        default="/Users/dhhuy/Uni/Thesis/Fashion-CLIP/E3-B16",
+        help="Path to pretrained model or model identifier from huggingface.co/models.",
+    )
+    parser.add_argument(
         "--revision",
         type=str,
         default=None,
