@@ -361,6 +361,8 @@ class VitonHDDataset(data.Dataset):
             parse_mask_total = parse_array * parse_mask_total
             parse_mask_total = torch.from_numpy(parse_mask_total)
 
+            inpaint_mask = np.logical_and(inpaint_mask, 1 - arms.astype(np.uint8))
+
         result = {}
         for k in self.outputlist:
             result[k] = vars()[k]
