@@ -109,6 +109,8 @@ class DressCodeDataset(data.Dataset):
                         im_names.append(im_name)
                         c_names.append(c_name)
                         dataroot_names.append(dataroot)
+                        multimodal_data_path_names.append(multimodal_data_path)
+
 
                         i += 1
                 else: #run full test data, gen full image
