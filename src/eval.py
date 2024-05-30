@@ -78,6 +78,8 @@ def main() -> None:
     if args.dataset == "dresscode":
         test_dataset = DressCodeDataset(
             dataroot_path=args.dataset_path,
+            multimodal_data_path=args.multimodal_data_path,
+            num_test_image=args.num_test_image,
             phase='test',
             order=args.test_order,
             radius=5,

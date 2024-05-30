@@ -23,6 +23,8 @@ from src.utils.posemap import kpoint_to_heatmap
 class DressCodeDataset(data.Dataset):
     def __init__(self,
                  dataroot_path: str,
+                 multimodal_data_path: str,
+                 num_test_image: int,
                  phase: str,
                  tokenizer,
                  radius=5,
@@ -41,6 +43,8 @@ class DressCodeDataset(data.Dataset):
         super(DressCodeDataset, self).__init__()
         self.dataroot = pathlib.Path(dataroot_path)
         self.phase = phase
+        self.multimodal_data_path = multimodal_data_path
+        self.num_test_image = num_test_image
         self.caption_folder = caption_folder
         self.sketch_threshold_range = sketch_threshold_range
         self.category = category
@@ -62,6 +66,7 @@ class DressCodeDataset(data.Dataset):
         im_names = []
         c_names = []
         dataroot_names = []
+        multimodal_data_path_names = []
 
         possible_outputs = ['c_name', 'im_name', 'cloth', 'image', 'im_cloth', 'shape', 'im_head', 'im_pose',
                             'pose_map', 'parse_array', 'dense_labels', 'dense_uv', 'skeleton',
@@ -71,35 +76,56 @@ class DressCodeDataset(data.Dataset):
         assert all(x in possible_outputs for x in outputlist)
 
         # Load Captions
-        with open(self.dataroot / self.caption_folder) as f:
+        with open(self.multimodal_data_path / self.caption_folder) as f:
             self.captions_dict = json.load(f)
         self.captions_dict = {k: v for k, v in self.captions_dict.items() if len(v) >= 3}
 
-        with open(self.dataroot / coarse_caption_folder) as f:
+        with open(self.multimodal_data_path / coarse_caption_folder) as f:
             self.captions_dict.update(json.load(f))
 
         for c in category:
             assert c in ['dresses', 'upper_body', 'lower_body']
 
             dataroot = self.dataroot / c
+            multimodal_data_path = self.multimodal_data_path_names / c
+
             if phase == 'train':
                 filename = dataroot / f"{phase}_pairs.txt"
             else:
                 filename = dataroot / f"{phase}_pairs_{order}.txt"
 
             with open(filename, 'r') as f:
-                for line in f.readlines():
-                    im_name, c_name = line.strip().split()
-                    if c_name.split('_')[0] not in self.captions_dict:
-                        continue
+                if num_test_image > 0: #limit number of image gen by num_test_image
+                    i = 0
 
-                    im_names.append(im_name)
-                    c_names.append(c_name)
-                    dataroot_names.append(dataroot)
+                    for line in f.readlines():
+                        if i > num_test_image:
+                            break
+
+                        im_name, c_name = line.strip().split()
+                        if c_name.split('_')[0] not in self.captions_dict:
+                            continue
+
+                        im_names.append(im_name)
+                        c_names.append(c_name)
+                        dataroot_names.append(dataroot)
+
+                        i += 1
+                else: #run full test data, gen full image
+                    for line in f.readlines():
+                        im_name, c_name = line.strip().split()
+                        if c_name.split('_')[0] not in self.captions_dict:
+                            continue
+
+                        im_names.append(im_name)
+                        c_names.append(c_name)
+                        dataroot_names.append(dataroot)
+                        multimodal_data_path_names.append(multimodal_data_path)
 
         self.im_names = im_names
         self.c_names = c_names
         self.dataroot_names = dataroot_names
+        self.multimodal_data_path_names = multimodal_data_path_names
 
     def __getitem__(self, index):
         """
@@ -113,6 +139,7 @@ class DressCodeDataset(data.Dataset):
         c_name = self.c_names[index]
         im_name = self.im_names[index]
         dataroot = self.dataroot_names[index]
+        multimodal_data_path = self.multimodal_data_path_names[index]
 
         sketch_threshold = random.randint(self.sketch_threshold_range[0], self.sketch_threshold_range[1])
 
@@ -145,9 +172,9 @@ class DressCodeDataset(data.Dataset):
 
             if "unpaired" == self.order and self.phase == 'test':  # Upper of multigarment is the same of unpaired
                 im_sketch = Image.open(
-                    dataroot / 'im_sketch_unpaired' / f'{im_name.replace(".jpg", "")}_{c_name.replace(".jpg", ".png")}')
+                    multimodal_data_path / 'im_sketch_unpaired' / f'{im_name.replace(".jpg", "")}_{c_name.replace(".jpg", ".png")}')
             else:
-                im_sketch = Image.open(dataroot / 'im_sketch' / c_name.replace(".jpg", ".png"))
+                im_sketch = Image.open(multimodal_data_path / 'im_sketch' / c_name.replace(".jpg", ".png"))
 
             im_sketch = im_sketch.resize((self.width, self.height))
             im_sketch = ImageOps.invert(im_sketch)
@@ -368,7 +395,7 @@ class DressCodeDataset(data.Dataset):
             parse_mask_total = torch.from_numpy(parse_mask_total)
 
         if "stitch_label" in self.outputlist:
-            stitch_labelmap = Image.open(self.dataroot / 'test_stitchmap' / im_name.replace(".jpg", ".png"))
+            stitch_labelmap = Image.open(self.multimodal_data_path / 'test_stitchmap' / im_name.replace(".jpg", ".png"))
             stitch_labelmap = transforms.ToTensor()(stitch_labelmap) * 255
             stitch_label = stitch_labelmap == 13
 

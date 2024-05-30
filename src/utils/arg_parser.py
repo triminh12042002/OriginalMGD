@@ -64,6 +64,13 @@ def eval_parse_args() -> argparse.Namespace:
         required=True,
         help="Path to the dataset",
     )
+    parser.add_argument(
+        "--multimodal_data_path",
+        type=str,
+        required=False,
+        help="Path to the multimodal dataset (adidtional dataset))",
+    )
+    parser.add_argument("--num_test_image", type=int, default=10, help="Number of test image, to make sure the code work before run full test dataset")
     parser.add_argument("--category", type=str, default="", help="category to use")
     parser.add_argument("--test_order", type=str, required=True, choices=["unpaired", "paired"],
                         help="Test order, should be either paired or unpaired")
