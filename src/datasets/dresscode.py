@@ -43,7 +43,7 @@ class DressCodeDataset(data.Dataset):
         super(DressCodeDataset, self).__init__()
         self.dataroot = pathlib.Path(dataroot_path)
         self.phase = phase
-        self.multimodal_data_path = multimodal_data_path
+        self.multimodal_data_path = pathlib.Path(multimodal_data_path)
         self.num_test_image = num_test_image
         self.caption_folder = caption_folder
         self.sketch_threshold_range = sketch_threshold_range
@@ -87,7 +87,7 @@ class DressCodeDataset(data.Dataset):
             assert c in ['dresses', 'upper_body', 'lower_body']
 
             dataroot = self.dataroot / c
-            multimodal_data_path = self.multimodal_data_path_names / c
+            multimodal_data_path = self.multimodal_data_path / c
 
             if phase == 'train':
                 filename = dataroot / f"{phase}_pairs.txt"
