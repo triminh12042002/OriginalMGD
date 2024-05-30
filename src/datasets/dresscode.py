@@ -397,7 +397,7 @@ class DressCodeDataset(data.Dataset):
             parse_mask_total = torch.from_numpy(parse_mask_total)
 
         if "stitch_label" in self.outputlist:
-            stitch_labelmap = Image.open(self.multimodal_data_path / 'test_stitchmap' / im_name.replace(".jpg", ".png"))
+            stitch_labelmap = Image.open(self.multimodal_data_path / 'test_stitch_map' / im_name.replace(".jpg", ".png"))
             stitch_labelmap = transforms.ToTensor()(stitch_labelmap) * 255
             stitch_label = stitch_labelmap == 13
 
