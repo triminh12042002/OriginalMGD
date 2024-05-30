@@ -96,6 +96,7 @@ class DressCodeDataset(data.Dataset):
 
             with open(filename, 'r') as f:
                 if num_test_image > 0: #limit number of image gen by num_test_image
+                    print("run limit test data")
                     i = 0
 
                     for line in f.readlines():
@@ -114,6 +115,7 @@ class DressCodeDataset(data.Dataset):
 
                         i += 1
                 else: #run full test data, gen full image
+                    print("run full test data")
                     for line in f.readlines():
                         im_name, c_name = line.strip().split()
                         if c_name.split('_')[0] not in self.captions_dict:
