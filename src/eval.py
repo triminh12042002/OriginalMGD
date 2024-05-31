@@ -75,6 +75,8 @@ def main() -> None:
     else:
         category = ['dresses', 'upper_body', 'lower_body']
 
+    print("category", category)
+          
     if args.dataset == "dresscode":
         test_dataset = DressCodeDataset(
             dataroot_path=args.dataset_path,
