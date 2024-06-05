@@ -398,6 +398,8 @@ class DressCodeDataset(data.Dataset):
             parse_mask_total = parse_array * parse_mask_total
             parse_mask_total = torch.from_numpy(parse_mask_total)
 
+            inpaint_mask = np.logical_and(inpaint_mask, 1 - arms.astype(np.uint8))
+
         if "stitch_label" in self.outputlist:
             stitch_labelmap = Image.open(self.multimodal_data_path / 'test_stitch_map' / im_name.replace(".jpg", ".png"))
             stitch_labelmap = transforms.ToTensor()(stitch_labelmap) * 255
