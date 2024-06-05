@@ -19,6 +19,9 @@ from torchvision.ops import masks_to_boxes
 from src.utils.labelmap import label_map
 from src.utils.posemap import kpoint_to_heatmap
 
+import torchvision
+import torchvision.transforms as T
+from datetime import datetime
 
 class DressCodeDataset(data.Dataset):
     def __init__(self,
@@ -399,6 +402,15 @@ class DressCodeDataset(data.Dataset):
             parse_mask_total = torch.from_numpy(parse_mask_total)
 
             inpaint_mask = np.logical_and(inpaint_mask, 1 - arms.astype(np.uint8))
+
+            if(self.num_test_image > 0):
+                # save inpaint_mask as img
+                transform = T.ToPILImage()
+                temp_inpaint_mask = inpaint_mask.type(torch.float32)
+                img = transform(temp_inpaint_mask)
+                now = datetime.now() # current date and time
+                time = now.strftime("%H:%M:%S")
+                img.save(time + ".jpg")
 
         if "stitch_label" in self.outputlist:
             stitch_labelmap = Image.open(self.multimodal_data_path / 'test_stitch_map' / im_name.replace(".jpg", ".png"))
