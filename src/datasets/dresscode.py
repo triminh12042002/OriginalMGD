@@ -409,7 +409,7 @@ class DressCodeDataset(data.Dataset):
                 temp_inpaint_mask = inpaint_mask.type(torch.float32)
                 img = transform(temp_inpaint_mask)
                 now = datetime.now() # current date and time
-                time = now.strftime("%H:%M:%S")
+                time = now.strftime("%H:%M:%S.%f")[:-4]
                 img.save(time + ".jpg")
 
         if "stitch_label" in self.outputlist:
