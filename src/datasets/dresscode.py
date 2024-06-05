@@ -396,6 +396,7 @@ class DressCodeDataset(data.Dataset):
                 torch.logical_not(parser_mask_fixed[ymin:ymax + 1, xmin:xmax + 1]))
 
             inpaint_mask = inpaint_mask.unsqueeze(0)
+            original_inpaint_mask = torch.tensor(inpaint_mask)
             im_mask = image * np.logical_not(inpaint_mask.repeat(3, 1, 1))
             parse_mask_total = parse_mask_total.numpy()
             parse_mask_total = parse_array * parse_mask_total
@@ -405,12 +406,17 @@ class DressCodeDataset(data.Dataset):
 
             if(self.num_test_image > 0):
                 # save inpaint_mask as img
-                transform = T.ToPILImage()
-                temp_inpaint_mask = inpaint_mask.type(torch.float32)
-                img = transform(temp_inpaint_mask)
                 now = datetime.now() # current date and time
                 time = now.strftime("%H:%M:%S.%f")[:-4]
-                img.save(time + ".jpg")
+            
+                transform = T.ToPILImage()
+                temp_inpaint_mask = original_inpaint_mask.type(torch.float32)
+                img = transform(temp_inpaint_mask)
+                img.save("original_" + time + ".jpg")
+
+                temp_inpaint_mask = inpaint_mask.type(torch.float32)
+                img = transform(temp_inpaint_mask)
+                img.save("new_" + time + ".jpg")
 
         if "stitch_label" in self.outputlist:
             stitch_labelmap = Image.open(self.multimodal_data_path / 'test_stitch_map' / im_name.replace(".jpg", ".png"))
