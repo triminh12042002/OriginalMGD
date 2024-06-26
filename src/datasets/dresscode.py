@@ -402,7 +402,8 @@ class DressCodeDataset(data.Dataset):
             parse_mask_total = parse_array * parse_mask_total
             parse_mask_total = torch.from_numpy(parse_mask_total)
 
-            inpaint_mask = np.logical_and(inpaint_mask, 1 - arms.astype(np.uint8))
+            # un mask hand
+            # inpaint_mask = np.logical_and(inpaint_mask, 1 - arms.astype(np.uint8))
 
             if(self.num_test_image > 0):
                 # save inpaint_mask as img
