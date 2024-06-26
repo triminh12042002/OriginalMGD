@@ -48,10 +48,12 @@ def main() -> None:
     )
 
     if len(args.finetuned_CLIP_path) > 0 :
+        print("Use fine tuned CLIP")
         clip_model = CLIPModel.from_pretrained(args.pretrained_model_path_of_CLIP)
         text_encoder = CLIPTextModel(CLIPTextConfig.from_pretrained(args.pretrained_model_path_of_CLIP))
         text_encoder.text_model = clip_model.text_model
     else :
+        print("Use Original CLIP")
         text_encoder = CLIPTextModel.from_pretrained(
             args.pretrained_model_name_or_path, subfolder="text_encoder", revision=args.revision
         )
