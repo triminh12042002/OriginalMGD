@@ -116,6 +116,10 @@ def generate_images_from_mgd_pipe(
                                                antialias = True
                                                )
 
+                    temp_imge = T.functional.to_pil_image(generated_images[i])
+                    temp_imge.save(
+                        os.path.join(path, "before_compose_", batch["im_name"][i].replace(".jpg", ext)))
+                    
                     final_img = compose_img_dresscode(
                         gt_img = model_i, 
                         fake_img = T.functional.to_tensor(generated_images[i]).to(model_img.device), 
