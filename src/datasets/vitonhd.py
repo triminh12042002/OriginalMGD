@@ -41,6 +41,7 @@ class VitonHDDataset(data.Dataset):
         super(VitonHDDataset, self).__init__()
         self.dataroot = dataroot_path
         self.phase = phase
+        self.user_input_caption = user_input_caption
         self.caption_folder = caption_folder
         self.sketch_threshold_range = sketch_threshold_range
         self.category = ('upper_body')
