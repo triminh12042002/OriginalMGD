@@ -97,6 +97,7 @@ def main() -> None:
     elif args.dataset == "vitonhd":
         test_dataset = VitonHDDataset(
             dataroot_path=args.dataset_path,
+            user_input_caption=args.user_input_caption,
             phase='test',
             order=args.test_order,
             sketch_threshold_range=(20, 20),

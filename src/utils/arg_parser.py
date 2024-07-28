@@ -70,6 +70,7 @@ def eval_parse_args() -> argparse.Namespace:
         required=False,
         help="Path to the multimodal dataset (adidtional dataset))",
     )
+    parser.add_argument("--user_input_caption", type=str, default="", help="user_input_caption")
     parser.add_argument("--finetuned_CLIP_path", type=str, default="", help="Fine-tuned CLIP path if was used")
     parser.add_argument("--num_test_image", type=int, default=10, help="Number of test image, to make sure the code work before run full test dataset")
     parser.add_argument("--category", type=str, default="", help="category to use")

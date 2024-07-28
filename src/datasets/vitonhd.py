@@ -26,6 +26,7 @@ class VitonHDDataset(data.Dataset):
             self,
             dataroot_path: str,
             phase: str,
+            user_input_caption: str,
             tokenizer,
             radius=5,
             caption_folder='captions.json',
@@ -119,11 +120,14 @@ class VitonHDDataset(data.Dataset):
         sketch_threshold = random.randint(self.sketch_threshold_range[0], self.sketch_threshold_range[1])
 
         if "captions" in self.outputlist or "original_captions" in self.outputlist:
-            captions = self.captions_dict[c_name.split('_')[0]]
-            # take a random caption if there are multiple
-            if self.phase == 'train':
-                random.shuffle(captions)
-            captions = ", ".join(captions)
+            # captions = self.captions_dict[c_name.split('_')[0]]
+            # # take a random caption if there are multiple
+            # if self.phase == 'train':
+            #     random.shuffle(captions)
+            # captions = ", ".join(captions)
+            
+            # for demo
+            captions = self.user_input_caption
 
             original_captions = captions
 
