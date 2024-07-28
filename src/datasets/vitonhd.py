@@ -165,7 +165,12 @@ class VitonHDDataset(data.Dataset):
                 )
 
             im_sketch = im_sketch.resize((self.width, self.height))
-            im_sketch = ImageOps.invert(im_sketch)
+
+            if im_sketch.mode != "":
+                im_sketch = im_sketch.convert("1")
+            else :
+                im_sketch = ImageOps.invert(im_sketch)
+                
             # threshold grayscale pil image
             im_sketch = im_sketch.point(lambda p: 255 if p > sketch_threshold else 0)
             # im_sketch = im_sketch.convert("RGB")
