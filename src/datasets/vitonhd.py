@@ -166,7 +166,8 @@ class VitonHDDataset(data.Dataset):
 
             im_sketch = im_sketch.resize((self.width, self.height))
 
-            if im_sketch.mode != "":
+            print("im_sketch.mode", im_sketch.mode)
+            if im_sketch.mode != "1":
                 im_sketch = im_sketch.convert("1")
             else :
                 im_sketch = ImageOps.invert(im_sketch)
