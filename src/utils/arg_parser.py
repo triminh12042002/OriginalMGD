@@ -57,6 +57,7 @@ def eval_parse_args() -> argparse.Namespace:
     )
     
     # dataset parameters
+    parser.add_argument("--non_hand_mask", action="store_true")
     parser.add_argument("--dataset", type=str, required=True, choices=["dresscode", "vitonhd"], help="dataset to use")
     parser.add_argument(
         "--dataset_path",

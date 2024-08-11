@@ -27,6 +27,7 @@ class VitonHDDataset(data.Dataset):
             dataroot_path: str,
             phase: str,
             user_input_caption: str,
+            non_hand_mask: bool,
             tokenizer,
             radius=5,
             caption_folder='captions.json',
@@ -42,6 +43,7 @@ class VitonHDDataset(data.Dataset):
         self.dataroot = dataroot_path
         self.phase = phase
         self.user_input_caption = user_input_caption
+        self.non_hand_mask = non_hand_mask
         self.caption_folder = caption_folder
         self.sketch_threshold_range = sketch_threshold_range
         self.category = ('upper_body')
@@ -372,7 +374,9 @@ class VitonHDDataset(data.Dataset):
             parse_mask_total = parse_array * parse_mask_total
             parse_mask_total = torch.from_numpy(parse_mask_total)
 
-            inpaint_mask = np.logical_and(inpaint_mask, 1 - arms.astype(np.uint8))
+            if self.non_hand_mask:
+                print("Use non hand mask")
+                inpaint_mask = np.logical_and(inpaint_mask, 1 - arms.astype(np.uint8))
 
         result = {}
         for k in self.outputlist:

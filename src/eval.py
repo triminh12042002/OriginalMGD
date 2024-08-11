@@ -80,7 +80,14 @@ def main() -> None:
         category = ['dresses', 'upper_body', 'lower_body']
 
     print("category", category)
-          
+
+    if args.non_hand_mask:
+        print("Use non hand mask")
+        isNonHandMask = True
+    else:
+        print("Use normal mask")
+        isNonHandMask = False
+    
     if args.dataset == "dresscode":
         test_dataset = DressCodeDataset(
             dataroot_path=args.dataset_path,
@@ -96,6 +103,7 @@ def main() -> None:
         )
     elif args.dataset == "vitonhd":
         test_dataset = VitonHDDataset(
+            non_hand_mask=isNonHandMask,
             dataroot_path=args.dataset_path,
             user_input_caption=args.user_input_caption,
             phase='test',
